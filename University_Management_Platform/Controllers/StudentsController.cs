@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using University_Management_Platform.Data;
 using University_Management_Platform.Models;
+using University_Management_Platform.ViewModels.Students;
 
 namespace University_Management_Platform.Controllers
 {
     public class StudentsController : Controller
     {
         private readonly UniversityDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public StudentsController(UniversityDbContext context)
+        public StudentsController(UniversityDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Students
@@ -63,16 +67,29 @@ namespace University_Management_Platform.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students
+            var s = await _context.Students
                 .Include(s => s.Enrollments)
                     .ThenInclude(e => e.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (student == null)
+            if (s == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            var vm = new StudentEditVM
+            {
+                Id = s.Id,
+                StudentId = s.StudentId,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                EnrollmentDate = s.EnrollmentDate,
+                AccquiredCredits = s.AccquiredCredits,
+                CurrentSemester = s.CurrentSemester,
+                EducationLevel = s.EducationLevel,
+                ExistingPhotoPath = s.photoPath
+            };
+
+            return View(vm);
         }
 
         // GET: Students/Create
@@ -105,12 +122,27 @@ namespace University_Management_Platform.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
+            var s = await _context.Students.FindAsync(id);
+            if (s == null)
             {
                 return NotFound();
             }
-            return View(student);
+
+            var vm = new StudentEditVM
+            {
+                Id = s.Id,
+                StudentId = s.StudentId,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                EnrollmentDate = s.EnrollmentDate,
+                AccquiredCredits = s.AccquiredCredits,
+                CurrentSemester = s.CurrentSemester,
+                EducationLevel = s.EducationLevel,
+                ExistingPhotoPath = s.photoPath
+            };
+
+
+            return View(vm);
         }
 
         // POST: Students/Edit/5
@@ -118,35 +150,35 @@ namespace University_Management_Platform.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,StudentId,FirstName,LastName,EnrollmentDate,AccquiredCredits,CurrentSemester,EducationLevel")] Student student)
+        public async Task<IActionResult> Edit(StudentEditVM vm, [FromServices] IFileStorageService files)
         {
-            if (id != student.Id)
-            {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var student = await _context.Students.FindAsync(vm.Id);
+            if (student == null)
                 return NotFound();
+
+            student.StudentId = vm.StudentId;
+            student.FirstName = vm.FirstName;
+            student.LastName = vm.LastName;
+            student.EnrollmentDate = vm.EnrollmentDate;
+            student.AccquiredCredits = vm.AccquiredCredits;
+            student.CurrentSemester = vm.CurrentSemester;
+            student.EducationLevel = vm.EducationLevel;
+
+            if (vm.Photo != null && vm.Photo.Length > 0)
+            {
+                if (!string.IsNullOrWhiteSpace(student.photoPath))
+                    files.DeleteIfExists(student.photoPath, true);
+
+                student.photoPath = await files.SavePhotoAsync(vm.Photo, "photos/students");
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StudentExists(student.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(student);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Students/Delete/5
         public async Task<IActionResult> Delete(long? id)

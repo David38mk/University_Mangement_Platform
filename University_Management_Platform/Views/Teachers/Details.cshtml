@@ -1,4 +1,4 @@
-﻿@model University_Management_Platform.Models.Teacher
+﻿@model University_Management_Platform.ViewModels.Teachers.TeachersEditVM
 
 @{
     ViewData["Title"] = "Details";
@@ -10,6 +10,13 @@
     <h4>Teacher</h4>
     <hr />
     <dl class="row">
+        <dt>
+            @if (!string.IsNullOrWhiteSpace(Model.ExistingPhotoPath))
+            {
+                <img src="@Model.ExistingPhotoPath"
+                     style="max-height:160px; width:auto; border-radius:8px;" />
+            }
+        </dt>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>

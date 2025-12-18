@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using University_Management_Platform.Data;
 
@@ -11,9 +12,11 @@ using University_Management_Platform.Data;
 namespace University_Management_Platform.Migrations
 {
     [DbContext(typeof(UniversityDbContext))]
-    partial class UniversityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251218175303_addingPictures")]
+    partial class addingPictures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,47 +65,6 @@ namespace University_Management_Platform.Migrations
                     b.HasIndex("SecondTeacherId");
 
                     b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("University_Management_Platform.Models.Document", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OriginalFileName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<long>("Size")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("StoredFileName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<long>("StudentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("University_Management_Platform.Models.Enrollment", b =>
@@ -198,7 +160,7 @@ namespace University_Management_Platform.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<string>("photoPath")
+                    b.Property<string>("profilePicture")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -239,7 +201,7 @@ namespace University_Management_Platform.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<string>("PhotoPath")
+                    b.Property<string>("profilePicture")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -262,23 +224,6 @@ namespace University_Management_Platform.Migrations
                     b.Navigation("FirstTeacher");
 
                     b.Navigation("SecondTeacher");
-                });
-
-            modelBuilder.Entity("University_Management_Platform.Models.Document", b =>
-                {
-                    b.HasOne("University_Management_Platform.Models.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId");
-
-                    b.HasOne("University_Management_Platform.Models.Student", "Student")
-                        .WithMany("Documents")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("University_Management_Platform.Models.Enrollment", b =>
@@ -307,8 +252,6 @@ namespace University_Management_Platform.Migrations
 
             modelBuilder.Entity("University_Management_Platform.Models.Student", b =>
                 {
-                    b.Navigation("Documents");
-
                     b.Navigation("Enrollments");
                 });
 

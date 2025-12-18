@@ -16,6 +16,8 @@ namespace University_Management_Platform.Data
         public DbSet<Teacher> Teachers => Set<Teacher>();
         public DbSet<Course> Courses => Set<Course>();
         public DbSet<Enrollment> Enrollments => Set<Enrollment>();
+        public DbSet<Document> Documents => Set<Document>();
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

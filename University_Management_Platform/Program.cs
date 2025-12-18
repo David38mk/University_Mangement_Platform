@@ -12,6 +12,9 @@ builder.Services.AddDbContext<UniversityDbContext>(options =>
     )
 );
 
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

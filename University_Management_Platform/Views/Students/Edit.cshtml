@@ -1,4 +1,4 @@
-﻿@model University_Management_Platform.Models.Student
+﻿@model University_Management_Platform.ViewModels.Students.StudentEditVM
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,8 +10,17 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (!string.IsNullOrWhiteSpace(Model.ExistingPhotoPath))
+            {
+                <img src="@Model.ExistingPhotoPath" style="max-height:160px;border-radius:8px;" />
+            }
+            <div class="form-group">
+                <label asp-for="Photo" class="control-label"></label>
+                <input asp-for="Photo" type="file" class="form-control" accept="image/*" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="StudentId" class="control-label"></label>

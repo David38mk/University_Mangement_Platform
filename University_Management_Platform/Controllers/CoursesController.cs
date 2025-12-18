@@ -54,7 +54,7 @@ namespace University_Management_Platform.Controllers
             var courses = await _context.Courses
                 .Where(c => c.FirstTeacherId == teacherId || c.SecondTeacherId == teacherId)
                 .Include(c => c.FirstTeacher)
-                .Include(c => c.SecondTeacher)
+                .Include(c => c.SecondTeacher) 
                 .ToListAsync();
 
             ViewBag.Teacher = teacher;

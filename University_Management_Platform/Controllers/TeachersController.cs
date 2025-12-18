@@ -1,23 +1,27 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using University_Management_Platform.Data;
 using University_Management_Platform.Models;
 using University_Management_Platform.Models.ViewModels;
+using University_Management_Platform.ViewModels.Students;
+using University_Management_Platform.ViewModels.Teachers;
 
 namespace University_Management_Platform.Controllers
 {
     public class TeachersController : Controller
     {
         private readonly UniversityDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public TeachersController(UniversityDbContext context)
+        public TeachersController(UniversityDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Teachers
@@ -46,27 +50,41 @@ namespace University_Management_Platform.Controllers
         }
 
 
+
+
         // GET: Teachers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var teacher = await _context.Teachers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            ViewBag.Courses = await _context.Courses
-                .Where(c => c.FirstTeacherId == id || c.SecondTeacherId == id)
-                .ToListAsync();
-
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == id.Value);
 
             if (teacher == null)
-            {
                 return NotFound();
-            }
 
-            return View(teacher);
+            ViewBag.Courses = await _context.Courses
+                .AsNoTracking()
+                .Where(c => c.FirstTeacherId == id.Value || c.SecondTeacherId == id.Value)
+                .ToListAsync();
+
+            var vm = new TeachersEditVM
+            {
+                Id = teacher.Id,
+                FirstName = teacher.FirstName,
+                LastName = teacher.LastName,
+                Degree = teacher.Degree,
+                AcademicRank = teacher.AcademicRank,
+                OfficeNumber = teacher.OfficeNumber,
+                HireDate = teacher.HireDate,
+
+                // IMPORTANT: map the stored image path/filename from your Teacher entity
+                ExistingPhotoPath = teacher.PhotoPath // <-- change this to your actual property name
+            };
+
+            return View(vm);
         }
 
         // GET: Teachers/Create
@@ -99,12 +117,25 @@ namespace University_Management_Platform.Controllers
                 return NotFound();
             }
 
-            var teacher = await _context.Teachers.FindAsync(id);
-            if (teacher == null)
+            var t = await _context.Teachers.FindAsync(id);
+            if (t == null)
             {
                 return NotFound();
             }
-            return View(teacher);
+
+            var vm = new TeachersEditVM
+            {
+                Id = t.Id,
+                FirstName = t.FirstName,
+                LastName = t.LastName,
+                Degree = t.Degree,
+                AcademicRank = t.AcademicRank,
+                OfficeNumber = t.OfficeNumber,
+                HireDate = t.HireDate,
+                ExistingPhotoPath = t.PhotoPath
+            };
+
+            return View(vm);
         }
 
         // POST: Teachers/Edit/5
@@ -112,34 +143,33 @@ namespace University_Management_Platform.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Degree,AcademicRank,OfficeNumber,HireDate")] Teacher teacher)
+        public async Task<IActionResult> Edit(TeachersEditVM vm, [FromServices] IFileStorageService files)
         {
-            if (id != teacher.Id)
-            {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var teacher = await _context.Teachers.FindAsync(vm.Id);
+            if (teacher == null)
                 return NotFound();
+
+            teacher.FirstName = vm.FirstName;
+            teacher.LastName = vm.LastName;
+            teacher.Degree = vm.Degree;
+            teacher.AcademicRank = vm.AcademicRank;
+            teacher.OfficeNumber = vm.OfficeNumber;
+            teacher.HireDate = vm.HireDate;
+
+
+            if (vm.Photo != null && vm.Photo.Length > 0)
+            {
+                if (!string.IsNullOrWhiteSpace(teacher.PhotoPath))
+                    files.DeleteIfExists(teacher.PhotoPath, true);
+
+                teacher.PhotoPath = await files.SavePhotoAsync(vm.Photo, "photos/students");
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(teacher);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TeacherExists(teacher.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(teacher);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Teachers/Delete/5
