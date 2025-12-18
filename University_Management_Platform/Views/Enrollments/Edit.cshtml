@@ -1,0 +1,86 @@
+﻿@model University_Management_Platform.Models.ViewModels.EnrollmentEditVm
+
+@{
+    ViewData["Title"] = "Edit Enrollment";
+}
+
+<h2>Edit Enrollment</h2>
+
+<div class="mb-3">
+    <strong>Course:</strong> @Model.CourseTitle <br />
+    <strong>Student:</strong> @Model.StudentIndex - @Model.StudentName
+</div>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-2">
+        <label asp-for="Semester" class="form-label"></label>
+        <input asp-for="Semester" class="form-control" />
+        <span asp-validation-for="Semester" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Year" class="form-label"></label>
+        <input asp-for="Year" class="form-control" type="number" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Grade" class="form-label"></label>
+        <input asp-for="Grade" class="form-control" type="number" />
+        <span asp-validation-for="Grade" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="ExamPoints" class="form-label"></label>
+        <input asp-for="ExamPoints" class="form-control" type="number" />
+        <span asp-validation-for="ExamPoints" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="SeminalPoints" class="form-label"></label>
+        <input asp-for="SeminalPoints" class="form-control" type="number" />
+        <span asp-validation-for="SeminalPoints" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="ProjectPoints" class="form-label"></label>
+        <input asp-for="ProjectPoints" class="form-control" type="number" />
+        <span asp-validation-for="ProjectPoints" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="AdditionalPoints" class="form-label"></label>
+        <input asp-for="AdditionalPoints" class="form-control" type="number" />
+        <span asp-validation-for="AdditionalPoints" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="SeminalUrl" class="form-label"></label>
+        <input asp-for="SeminalUrl" class="form-control" />
+        <span asp-validation-for="SeminalUrl" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="ProjectUrl" class="form-label"></label>
+        <input asp-for="ProjectUrl" class="form-control" />
+        <span asp-validation-for="ProjectUrl" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="FinishDate" class="form-label"></label>
+        <input asp-for="FinishDate" class="form-control" type="date" />
+        <span asp-validation-for="FinishDate" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-secondary" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">Back to Course</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

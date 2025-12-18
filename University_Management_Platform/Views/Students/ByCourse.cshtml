@@ -1,0 +1,29 @@
+﻿@model IEnumerable<University_Management_Platform.Models.Enrollment>
+@{
+    var c = (University_Management_Platform.Models.Course)ViewBag.Course;
+}
+<h2>Students in course: @c.Title</h2>
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>Index</th>
+            <th>Name</th>
+            <th>Grade</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td>@e.Student.StudentId</td>
+                <td>@e.Student.FirstName @e.Student.LastName</td>
+                <td>@e.Grade</td>
+                <td>
+                    <a asp-controller="Enrollments" asp-action="Edit" asp-route-id="@e.Id">Edit Enrollment</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,45 @@
+﻿@model University_Management_Platform.Models.ViewModels.ManageCourseStudentsVm
+
+<h2>Manage students for: @Model.CourseTitle</h2>
+
+<form asp-action="ManageStudents" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="CourseId" />
+    <input type="hidden" asp-for="CourseTitle" />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Enrolled</th>
+                <th>Index</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Students.Count; i++)
+            {
+                <tr>
+                    <td><input asp-for="Students[i].IsEnrolled" /></td>
+                    <td>
+                        @Model.Students[i].StudentIndex
+                        <input type="hidden" asp-for="Students[i].StudentDbId" />
+                        <input type="hidden" asp-for="Students[i].StudentIndex" />
+                        <input type="hidden" asp-for="Students[i].FullName" />
+                        <input type="hidden" asp-for="Students[i].EnrollmentId" />
+                    </td>
+                    <td>@Model.Students[i].FullName</td>
+                    <td>
+                        @if (Model.Students[i].EnrollmentId != null)
+                        {
+                            <a asp-controller="Enrollments" asp-action="Edit" asp-route-id="@Model.Students[i].EnrollmentId">Edit enrollment</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.CourseId">Back</a>
+</form>

@@ -1,4 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using University_Management_Platform.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<UniversityDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(
+            builder.Configuration.GetConnectionString("DefaultConnection")
+        )
+    )
+);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

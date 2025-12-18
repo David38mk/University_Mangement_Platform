@@ -1,0 +1,29 @@
+﻿@model IEnumerable<University_Management_Platform.Models.Course>
+@{
+    var t = (University_Management_Platform.Models.Teacher)ViewBag.Teacher;
+}
+<h2>Courses by @t.FirstName @t.LastName</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Semester</th>
+            <th>Programme</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Title</td>
+                <td>@c.Semester</td>
+                <td>@c.Programme</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@c.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

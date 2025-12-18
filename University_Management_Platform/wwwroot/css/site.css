@@ -1,22 +1,408 @@
+/* =========================
+   Theme variables (consistent colors)
+   ========================= */
+:root {
+    --brand-1: #2563eb; /* royal blue */
+    --brand-2: #38bdf8; /* bright cyan */
+    --brand-3: #0ea5e9; /* deeper cyan */
+    --text: #102a43;
+    --muted: #475569;
+    --bg-1: #f8fbff;
+    --bg-2: #eef3fb;
+    --card: #ffffff;
+    --border: #cbd5e1;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --success: #22c55e;
+    --shadow: 0 10px 28px rgba(0,0,0,0.10);
+}
+
+/* =========================
+   Global base
+   ========================= */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+}
+
+/* =========================
+   Typography + links
+   ========================= */
+h1, h2, h3, h4, h5 {
+    font-weight: 650;
+    color: var(--text);
+}
+
+a {
+    color: var(--brand-1);
+    text-decoration: none;
+    transition: color .2s ease, transform .15s ease;
+}
+
+    a:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+
+/* =========================
+   Navbar
+   ========================= */
+.navbar {
+    background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+    box-shadow: 0 6px 16px rgba(0,0,0,0.14);
+}
+
+.navbar-brand {
+    color: #fff !important;
+    font-weight: 800;
+    letter-spacing: .4px;
+}
+
+/* center nav items on larger screens */
+@media (min-width: 992px) {
+    .navbar-collapse {
+        justify-content: center;
+    }
+}
+
+.navbar-nav {
+    align-items: center;
+}
+
+    .navbar-nav .nav-item {
+        margin: 0 .35rem;
+    }
+
+    .navbar-nav .nav-link {
+        color: #fff !important;
+        font-weight: 600;
+        padding: .48rem 1rem;
+        border-radius: 999px;
+        position: relative;
+        transition: background-color .2s ease, transform .15s ease;
+    }
+
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(255,255,255,0.22);
+            transform: translateY(-1px);
+        }
+
+        /* ACTIVE PAGE: underline + subtle glow (works with MVC default "active" class) */
+        .navbar-nav .nav-link.active,
+        .navbar-nav .nav-item.active .nav-link {
+            background-color: rgba(255,255,255,0.18);
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.15) inset;
+        }
+
+            .navbar-nav .nav-link.active::after,
+            .navbar-nav .nav-item.active .nav-link::after {
+                content: "";
+                position: absolute;
+                left: 18%;
+                right: 18%;
+                bottom: 6px;
+                height: 3px;
+                border-radius: 10px;
+                background: #ffffff;
+                opacity: 0.95;
+            }
+
+/* =========================
+   Buttons
+   ========================= */
+.btn {
+    border-radius: 999px;
+    font-weight: 650;
+    padding: .42rem 1.1rem;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 18px rgba(0,0,0,0.12);
+        filter: saturate(1.05);
+    }
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+    border: none;
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #1d4ed8, var(--brand-3));
+    }
+
+.btn-secondary {
+    background-color: #64748b;
+    border: none;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    border: none;
+}
+
+.btn-success {
+    background-color: var(--success);
+    border: none;
+}
+
+/* Focus (accessible & consistent) */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 .2rem rgba(56,189,248,0.45);
+}
+
+/* =========================
+   Forms
+   ========================= */
+label {
+    font-weight: 650;
+    color: #334155;
+}
+
+.form-control {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+    .form-control:focus {
+        border-color: var(--brand-2);
+    }
+
+/* Filter forms */
+form.mb-3 {
+    background: var(--card);
+    padding: 1.25rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .55rem;
+}
+
+    form.mb-3 input, form.mb-3 button, form.mb-3 a {
+        margin: .1rem;
+    }
+
+/* =========================
+   Tables
+   ========================= */
+.table {
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+    .table thead {
+        background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+        color: #fff;
+    }
+
+    .table th {
+        font-weight: 700;
+        border-bottom: none;
+        text-align: center;
+    }
+
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f1f7ff;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #e0f2fe;
+}
+
+/* =========================
+   “Creative touch” for action links (Edit/Delete/Details/Back/etc.)
+   Works on scaffolded links without changing HTML.
+   ========================= */
+
+/* default: make all table action links look like pills */
+.table a {
+    display: inline-block;
+    padding: .28rem .7rem;
+    border-radius: 999px;
+    font-weight: 650;
+    text-decoration: none;
+    margin: 0 .12rem;
+    background: rgba(37,99,235,0.10);
+    color: #1d4ed8;
+    border: 1px solid rgba(37,99,235,0.18);
+    transition: transform .15s ease, background-color .2s ease, box-shadow .2s ease;
+}
+
+    .table a:hover {
+        background: rgba(56,189,248,0.18);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 18px rgba(0,0,0,0.10);
+        text-decoration: none;
+    }
+
+    /* Special colors based on link text (works for common scaffold labels) */
+    .table a[href*="/Edit"],
+    .table a:has(span):not(*) { /* harmless fallback */
+    }
+
+    .table a[href*="/Edit"],
+    .table a:contains("Edit") {
+    }
+
+    /* Since :contains is not supported in CSS, we rely on URL patterns only */
+    .table a[href*="/Edit"] {
+        background: rgba(34,197,94,0.12);
+        border-color: rgba(34,197,94,0.22);
+        color: #15803d;
+    }
+
+    .table a[href*="/Details"] {
+        background: rgba(14,165,233,0.14);
+        border-color: rgba(14,165,233,0.22);
+        color: #0369a1;
+    }
+
+    .table a[href*="/Delete"] {
+        background: rgba(239,68,68,0.12);
+        border-color: rgba(239,68,68,0.22);
+        color: #b91c1c;
+    }
+
+/* Back/Manage/Students links often aren’t in tables; style common action links too */
+a.action-link {
+    display: inline-block;
+    padding: .35rem .85rem;
+    border-radius: 999px;
+    font-weight: 650;
+    background: rgba(37,99,235,0.10);
+    border: 1px solid rgba(37,99,235,0.18);
+}
+
+    a.action-link:hover {
+        background: rgba(56,189,248,0.18);
+        text-decoration: none;
+    }
+
+/* =========================
+   Cards
+   ========================= */
+.card {
+    border-radius: 18px;
+    border: none;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* =========================
+   Checkbox list pages (Manage Students)
+   ========================= */
+.form-check-input {
+    cursor: pointer;
+    transform: scale(1.12);
+}
+
+    .form-check-input:checked {
+        background-color: var(--brand-1);
+        border-color: var(--brand-1);
+    }
+
+/* =========================
+   Lists (centered)
+   ========================= */
+ul, ol {
+    padding-left: 0;
+}
+
+    ul li, ol li {
+        list-style: none;
+        text-align: center;
+        padding: .35rem 0;
+        font-weight: 550;
+        color: var(--muted);
+    }
+
+/* =========================
+   Images
+   ========================= */
+img {
+    border-radius: 14px;
+}
+
+    img.profile-photo {
+        max-width: 180px;
+        border: 4px solid var(--brand-2);
+        padding: 5px;
+        background: #fff;
+        box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+    }
+
+/* =========================
+   Footer (fixed contrast)
+   ========================= */
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+    color: #ffffff !important; /* force readable text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+
+    footer, footer * {
+        color: #ffffff !important; /* also fixes links inside footer */
+    }
+
+        footer a {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+        }
+
+            footer a:hover {
+                color: #e6f6ff !important;
+            }
+
+/* Utility spacing */
+.mt-3 {
+    margin-top: 1.25rem !important;
+}
+
+.mb-3 {
+    margin-bottom: 1.25rem !important;
 }
