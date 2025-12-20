@@ -16,7 +16,7 @@ namespace University_Management_Platform.Data
         public DbSet<Teacher> Teachers => Set<Teacher>();
         public DbSet<Course> Courses => Set<Course>();
         public DbSet<Enrollment> Enrollments => Set<Enrollment>();
-        public DbSet<Document> Documents => Set<Document>();
+        public DbSet<EnrollmentSubmission> EnrollmentSubmissions => Set<EnrollmentSubmission>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -55,6 +55,14 @@ namespace University_Management_Platform.Data
             modelBuilder.Entity<Enrollment>()
                 .HasIndex(e => new { e.CourseId, e.StudentId })
                 .IsUnique();
+
+            //Delete Submissions when Enrollment is deleted
+            modelBuilder.Entity<EnrollmentSubmission>()
+                .HasOne(es => es.Enrollment)
+                .WithMany(e => e.EnrollmentSubmissions)
+                .HasForeignKey(es => es.EnrollmentID)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

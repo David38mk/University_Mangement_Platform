@@ -20,8 +20,10 @@ namespace University_Management_Platform.Models
         
         [StringLength(25)]
         public string? EducationLevel { get; set; }
+        [Display(Name = "First Teacher")]
         public int? FirstTeacherId { get; set; }
         public Teacher? FirstTeacher { get; set; }
+        [Display(Name = "Second Teacher")]
         public int? SecondTeacherId { get; set; }
         public Teacher? SecondTeacher { get; set; }
 

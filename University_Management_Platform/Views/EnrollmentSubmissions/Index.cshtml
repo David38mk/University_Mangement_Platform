@@ -1,0 +1,50 @@
+﻿@model IEnumerable<University_Management_Platform.Models.EnrollmentSubmission>
+@{
+    var enrollmentId = (int)ViewBag.EnrollmentId;
+}
+
+<h2>Submissions</h2>
+
+<p>
+    <a asp-action="Create" asp-route-enrollmentId="@enrollmentId" class="btn btn-primary">Upload new</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Version</th>
+            <th>Latest</th>
+            <th>Uploaded</th>
+            <th>File</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.SubmissionType</td>
+                <td>@s.Version</td>
+                <td>@s.IsLatest</td>
+                <td>@s.UploadedAt</td>
+                <td>@s.OriginalFileName</td>
+                <td class="text-end">
+                    <a asp-action="Download" asp-route-id="@s.ID" class="btn btn-sm btn-outline-primary">Download</a>
+
+                    <form asp-action="Delete" asp-route-id="@s.ID" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Delete this submission?');">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Enrollments" asp-action="Edit" asp-route-id="@enrollmentId" class="btn btn-secondary">
+    Back to Enrollment
+</a>

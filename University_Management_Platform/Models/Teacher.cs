@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace University_Management_Platform.Models
 {
@@ -14,7 +15,9 @@ namespace University_Management_Platform.Models
         [StringLength(50)]
         [DisplayName("Last Name")]
         public string LastName { get; set; } = null!;
-        
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
+
         [StringLength(50)]
         public string? Degree { get; set; }
         

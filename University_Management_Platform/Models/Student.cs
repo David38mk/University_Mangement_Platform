@@ -34,8 +34,6 @@ namespace University_Management_Platform.Models
         public string? EducationLevel { get; set; }
 
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
-
-        public ICollection<Document> Documents { get; set; } = new List<Document>();
         public string? photoPath { get; set; }
 
     }

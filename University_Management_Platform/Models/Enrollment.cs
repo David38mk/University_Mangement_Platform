@@ -28,6 +28,8 @@ namespace University_Management_Platform.Models
         public int? AdditionalPoints { get; set; }
         [DataType(DataType.Date)]
         public DateTime? FinishDate { get; set; }
+        
+        public ICollection<EnrollmentSubmission> EnrollmentSubmissions { get; set; } = new List<EnrollmentSubmission>();
 
     }
 }
