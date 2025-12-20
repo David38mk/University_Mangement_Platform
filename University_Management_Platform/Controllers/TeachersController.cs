@@ -79,9 +79,7 @@ namespace University_Management_Platform.Controllers
                 AcademicRank = teacher.AcademicRank,
                 OfficeNumber = teacher.OfficeNumber,
                 HireDate = teacher.HireDate,
-
-                // IMPORTANT: map the stored image path/filename from your Teacher entity
-                ExistingPhotoPath = teacher.PhotoPath // <-- change this to your actual property name
+                ExistingPhotoPath = teacher.PhotoPath 
             };
 
             return View(vm);
