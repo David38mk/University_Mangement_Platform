@@ -57,8 +57,12 @@
 
 <div>
     <p>
-        <a asp-action="ManageStudents" asp-route-id="@Model.Id">Manage Students</a> |
-        <a asp-controller="Students" asp-action="ByCourse" asp-route-courseId="@Model.Id">View Students</a>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <a asp-action="ManageStudents" asp-route-id="@Model.Id">Manage Students</a>
+            <a asp-controller="Students" asp-action="ByCourse" asp-route-courseId="@Model.Id">View Students</a>
+        }
+
     </p>
 
     <h4>Enrolled Students</h4>
@@ -80,9 +84,12 @@
                         <td>@e.Student.StudentId</td>
                         <td>@e.Student.FirstName @e.Student.LastName</td>
                         <td>@e.Grade</td>
-                        <td>
-                            <a asp-controller="Enrollments" asp-action="Edit" asp-route-id="@e.Id">Edit Enrollment</a>
-                        </td>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <a asp-controller="Enrollments" asp-action="Edit" asp-route-id="@e.Id">Edit Enrollment</a>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>
@@ -96,6 +103,9 @@
 </div>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")){
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        <a asp-action="Index">Back to List</a>
+    }
+    
 </div>

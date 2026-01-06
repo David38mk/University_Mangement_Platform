@@ -1,0 +1,47 @@
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace University_Management_Platform.Models.ViewModels
+{
+    public class CreateTeacherVM
+    {
+        public int Id { get; set; }
+        [Required]
+        [StringLength(50)]
+        [DisplayName("First Name")]
+        public string FirstName { get; set; } = null!;
+        [Required]
+        [StringLength(50)]
+        [DisplayName("Last Name")]
+        public string LastName { get; set; } = null!;
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
+
+        [StringLength(50)]
+        public string? Degree { get; set; }
+
+        [StringLength(25)]
+        [DisplayName("Academic Rank")]
+        public string? AcademicRank { get; set; }
+
+        [StringLength(10)]
+        [DisplayName("Office Number")]
+        public string? OfficeNumber { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayName("Hire Date")]
+        public DateTime? HireDate { get; set; }
+
+        public ICollection<Course> FirstCourses { get; set; } = new List<Course>();
+        public ICollection<Course> SecondCourses { get; set; } = new List<Course>();
+        public string? PhotoPath { get; set; }
+
+        // Identity fields
+        [Required, EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required, DataType(DataType.Password)]
+        public string Password { get; set; } = "";
+    }
+}

@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using University_Management_Platform.Areas.Identity.Data;
 using University_Management_Platform.Models;
 
 namespace University_Management_Platform.Data
 {
-    public class UniversityDbContext : DbContext
+    public class UniversityDbContext : IdentityDbContext<University_Management_PlatformUser>
     {
         public UniversityDbContext(DbContextOptions<UniversityDbContext> options)
             : base(options)

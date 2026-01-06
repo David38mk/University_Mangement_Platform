@@ -1,0 +1,82 @@
+﻿@model IEnumerable<University_Management_Platform.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "Course Students";
+    var course = (University_Management_Platform.Models.Course)ViewBag.Course;
+    var years = (List<int>)ViewBag.Years;
+    var selectedYear = (int)ViewBag.SelectedYear;
+}
+
+<h2>@course.Title - Students</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <input type="hidden" name="id" value="@course.Id" />
+    <div class="col-md-3">
+        <label class="form-label">Year</label>
+        <select class="form-select" name="year">
+            @foreach (var y in years)
+            {
+                <option value="@y" selected="@(y == selectedYear)">@y</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-outline-primary w-100" type="submit">Show</button>
+    </div>
+</form>
+
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success">@TempData["Ok"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Index</th>
+            <th>Name</th>
+            <th>Points</th>
+            <th>Grade</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            var active = e.FinishDate == null;
+            var points = (e.ExamPoints ?? 0) + (e.SeminalPoints ?? 0) + (e.ProjectPoints ?? 0) + (e.AdditionalPoints ?? 0);
+
+            <tr>
+                <td>@e.Student.StudentId</td>
+                <td>@(e.Student.FirstName + " " + e.Student.LastName)</td>
+                <td>@points</td>
+                <td>@(e.Grade?.ToString() ?? "-")</td>
+                <td>
+                    @if (active)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Finished</span>
+                    }
+                </td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary"
+                        asp-controller="Enrollments"
+                       asp-action="Edit"
+                       asp-route-id="@e.Id">
+                        Enter points
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-secondary" asp-action="MyCourses">Back</a>

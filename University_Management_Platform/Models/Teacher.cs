@@ -36,6 +36,7 @@ namespace University_Management_Platform.Models
         public ICollection<Course> FirstCourses { get; set; } = new List<Course>();
         public ICollection<Course> SecondCourses { get; set; } = new List<Course>();
         public string? PhotoPath { get; set; }
+        public string? IdentityUserId { get; set; }
 
     }
 }

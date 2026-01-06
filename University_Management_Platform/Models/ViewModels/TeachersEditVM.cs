@@ -33,5 +33,8 @@ namespace University_Management_Platform.ViewModels.Teachers
 
         [Display(Name = "Photo")]
         public IFormFile? Photo { get; set; }
+
+        public string? IdentityUserId { get; set; }
+
     }
 }

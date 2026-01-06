@@ -35,6 +35,8 @@ namespace University_Management_Platform.Models
 
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
         public string? photoPath { get; set; }
+        public string? IdentityUserId { get; set; }
+
 
     }
 }

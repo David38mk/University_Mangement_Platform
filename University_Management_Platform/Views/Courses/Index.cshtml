@@ -14,10 +14,11 @@
     <a asp-action="Index">Clear</a>
 </form>
 
-
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin")){
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -70,11 +71,21 @@
                 @Html.DisplayFor(modelItem => item.SecondTeacher.FirstName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-action="ManageStudents" asp-route-id="@item.Id">Manage Students</a> |
-                <a asp-controller="Students" asp-action="ByCourse" asp-route-courseId="@item.Id">Students</a>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            
+                    }  
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <a asp-action="ManageStudents" asp-route-id="@item.Id">Manage Students</a>
+                    }
+                    <a asp-controller="Students" asp-action="ByCourse" asp-route-courseId="@item.Id">Students</a>
 
             </td>
         </tr>

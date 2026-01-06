@@ -1,7 +1,11 @@
 ﻿@model University_Management_Platform.Models.ViewModels.EnrollmentEditVm
 
 @{
-    ViewData["Title"] = "Edit Enrollment";
+    ViewData["Title"] = "Edit Teacher";
+
+    bool isAdmin = User.IsInRole("Admin");
+    bool isTeacher = User.IsInRole("Teacher");
+    bool isStudent = User.IsInRole("Student");
 }
 
 <h2>Edit Enrollment</h2>
@@ -17,61 +21,105 @@
 
     <div class="mb-2">
         <label asp-for="Semester" class="form-label"></label>
-        <input asp-for="Semester" class="form-control" />
+        @if (isAdmin || isTeacher)
+        {
+            <input asp-for="Semester" class="form-control" />
+        }
+        else
+        {
+            <input asp-for="Semester" class="form-control" readonly/>
+        }
         <span asp-validation-for="Semester" class="text-danger"></span>
     </div>
 
     <div class="mb-2">
         <label asp-for="Year" class="form-label"></label>
-        <input asp-for="Year" class="form-control" type="number" />
+        @if (isAdmin || isTeacher)
+        {
+            <input asp-for="Year" class="form-control" type="number" />
+        }
+        else
+        {
+            <input asp-for="Year" class="form-control" type="number" readonly/>
+        }
         <span asp-validation-for="Year" class="text-danger"></span>
     </div>
 
     <div class="mb-2">
         <label asp-for="Grade" class="form-label"></label>
-        <input asp-for="Grade" class="form-control" type="number" />
+        @if (isTeacher)
+        {
+            <input asp-for="Grade" class="form-control" type="number" />
+        }
+        else
+        {
+            <input asp-for="Grade" class="form-control" type="number" readonly/>
+        }
         <span asp-validation-for="Grade" class="text-danger"></span>
     </div>
 
     <div class="mb-2">
         <label asp-for="ExamPoints" class="form-label"></label>
-        <input asp-for="ExamPoints" class="form-control" type="number" />
+        @if (isTeacher)
+        {
+            <input asp-for="ExamPoints" class="form-control" type="number" />
+        }
+        else
+        {
+            <input asp-for="ExamPoints" class="form-control" type="number" readonly/>
+        }
         <span asp-validation-for="ExamPoints" class="text-danger"></span>
     </div>
 
     <div class="mb-2">
         <label asp-for="SeminalPoints" class="form-label"></label>
-        <input asp-for="SeminalPoints" class="form-control" type="number" />
+        @if (isTeacher)
+        {
+            <input asp-for="SeminalPoints" class="form-control" type="number" />
+        }
+        else
+        {
+            <input asp-for="SeminalPoints" class="form-control" type="number" readonly/>
+        }
         <span asp-validation-for="SeminalPoints" class="text-danger"></span>
     </div>
 
     <div class="mb-2">
         <label asp-for="ProjectPoints" class="form-label"></label>
-        <input asp-for="ProjectPoints" class="form-control" type="number" />
+        @if (isTeacher)
+        {
+            <input asp-for="ProjectPoints" class="form-control" type="number" />
+        }
+        else
+        {
+            <input asp-for="ProjectPoints" class="form-control" type="number" readonly/>
+        }
         <span asp-validation-for="ProjectPoints" class="text-danger"></span>
     </div>
 
     <div class="mb-2">
         <label asp-for="AdditionalPoints" class="form-label"></label>
-        <input asp-for="AdditionalPoints" class="form-control" type="number" />
+        @if (isTeacher)
+        {
+            <input asp-for="AdditionalPoints" class="form-control" type="number" />
+        }
+        else
+        {
+            <input asp-for="AdditionalPoints" class="form-control" type="number" readonly/>
+        }
         <span asp-validation-for="AdditionalPoints" class="text-danger"></span>
     </div>
 
     <div class="mb-2">
-        <label asp-for="SeminalUrl" class="form-label"></label>
-        <input asp-for="SeminalUrl" class="form-control" />
-        <span asp-validation-for="SeminalUrl" class="text-danger"></span>
-    </div>
-
-    <div class="mb-2">
-        <label asp-for="ProjectUrl" class="form-label"></label>
-        <input asp-for="ProjectUrl" class="form-control" />
-        <span asp-validation-for="ProjectUrl" class="text-danger"></span>
-    </div>
-
-    <div class="mb-2">
         <label asp-for="FinishDate" class="form-label"></label>
-        <input asp-for="FinishDate" class="form-control" type="date" />
+        @if (isTeacher || isAdmin)
+        {
+            <input asp-for="FinishDate" class="form-control" type="date" />
+        }
+        else
+        {
+            <input asp-for="FinishDate" class="form-control" type="date" readonly/>
+        }
         <span asp-validation-for="FinishDate" class="text-danger"></span>
     </div>
     <div class="mb-2">

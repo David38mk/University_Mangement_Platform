@@ -20,9 +20,11 @@
                 <td>@e.Student.StudentId</td>
                 <td>@e.Student.FirstName @e.Student.LastName</td>
                 <td>@e.Grade</td>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")){
                 <td>
-                    <a asp-controller="Enrollments" asp-action="Edit" asp-route-id="@e.Id">Edit Enrollment</a>
+                        <a asp-controller="Enrollments" asp-action="Edit" asp-route-id="@e.Id">Edit Enrollment</a>
                 </td>
+                }
             </tr>
         }
     </tbody>

@@ -13,8 +13,6 @@ namespace University_Management_Platform.Models.ViewModels
         public string? Semester { get; set; }
         public int? Year { get; set; }
         public int? Grade { get; set; }
-        public string? SeminalUrl { get; set; }
-        public string? ProjectUrl { get; set; }
         public int? ExamPoints { get; set; }
         public int? SeminalPoints { get; set; }
         public int? ProjectPoints { get; set; }

@@ -1,4 +1,4 @@
-﻿@model University_Management_Platform.Models.Student
+﻿@model University_Management_Platform.Models.ViewModels.CreateStudentVM
 
 @{
     ViewData["Title"] = "Create";
@@ -47,8 +47,26 @@
                 <input asp-for="EducationLevel" class="form-control" />
                 <span asp-validation-for="EducationLevel" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+            <hr />
+            <h5 class="mt-2">Login account</h5>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" type="password" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <div class="form-text">Student will use this password to log in (can be changed later).</div>
+            </div>
+
+            <div class="d-flex gap-2">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a class="btn btn-secondary" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>

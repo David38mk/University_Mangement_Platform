@@ -1,0 +1,37 @@
+﻿@model IEnumerable<University_Management_Platform.Models.Course>
+
+@{
+    ViewData["Title"] = "My Courses";
+    var t = ViewBag.Teacher;
+}
+
+<h2>My Courses</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Semester</th>
+            <th>Programme</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Title</td>
+                <td>@c.Semester</td>
+                <td>@c.Programme</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-primary"
+                       asp-action="MyCourseStudents"
+                       asp-route-id="@c.Id">
+                        Students
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    
+</table>

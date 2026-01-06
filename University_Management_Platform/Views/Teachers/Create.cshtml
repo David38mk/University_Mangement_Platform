@@ -1,58 +1,84 @@
-﻿@model University_Management_Platform.Models.Teacher
+﻿@model University_Management_Platform.Models.ViewModels.CreateTeacherVM
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Teacher";
 }
 
-<h1>Create</h1>
+<h1>Create Teacher</h1>
 
-<h4>Teacher</h4>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-6 col-lg-5">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
+
+            <h5 class="mt-2">Teacher info</h5>
+
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label"></label>
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Degree" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="Degree" class="form-label"></label>
                 <input asp-for="Degree" class="form-control" />
                 <span asp-validation-for="Degree" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="AcademicRank" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="AcademicRank" class="form-label"></label>
                 <input asp-for="AcademicRank" class="form-control" />
                 <span asp-validation-for="AcademicRank" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="OfficeNumber" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="OfficeNumber" class="form-label"></label>
                 <input asp-for="OfficeNumber" class="form-control" />
                 <span asp-validation-for="OfficeNumber" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="HireDate" class="control-label"></label>
-                <input asp-for="HireDate" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="HireDate" class="form-label"></label>
+                <input asp-for="HireDate" class="form-control" type="date" />
                 <span asp-validation-for="HireDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+            <hr />
+            <h5 class="mt-2">Login account</h5>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" type="password" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <div class="form-text">Teacher will use this password to log in (can be changed later).</div>
+            </div>
+
+            <div class="d-flex gap-2">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a class="btn btn-secondary" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,45 +1,293 @@
 ﻿@model University_Management_Platform.Models.ViewModels.ManageCourseStudentsVm
 
+@{
+    ViewData["Title"] = "Manage Students";
+}
+
 <h2>Manage students for: @Model.CourseTitle</h2>
 
-<form asp-action="ManageStudents" method="post">
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success">@TempData["Ok"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<hr />
+
+<h4>Enroll students (filter → pending → enroll)</h4>
+
+<form id="batchForm" asp-action="EnrollStudentsBatch" method="post" class="mb-4">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="CourseId" />
     <input type="hidden" asp-for="CourseTitle" />
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Enrolled</th>
-                <th>Index</th>
-                <th>Name</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.Students.Count; i++)
-            {
-                <tr>
-                    <td><input asp-for="Students[i].IsEnrolled" /></td>
-                    <td>
-                        @Model.Students[i].StudentIndex
-                        <input type="hidden" asp-for="Students[i].StudentDbId" />
-                        <input type="hidden" asp-for="Students[i].StudentIndex" />
-                        <input type="hidden" asp-for="Students[i].FullName" />
-                        <input type="hidden" asp-for="Students[i].EnrollmentId" />
-                    </td>
-                    <td>@Model.Students[i].FullName</td>
-                    <td>
-                        @if (Model.Students[i].EnrollmentId != null)
-                        {
-                            <a asp-controller="Enrollments" asp-action="Edit" asp-route-id="@Model.Students[i].EnrollmentId">Edit enrollment</a>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row g-3 align-items-end">
+        <div class="col-md-2">
+            <label asp-for="DefaultYear" class="form-label">Year</label>
+            <input asp-for="DefaultYear" class="form-control" />
+        </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.CourseId">Back</a>
+        <div class="col-md-3">
+            <label asp-for="DefaultSemester" class="form-label">Semester</label>
+            <input asp-for="DefaultSemester" class="form-control" placeholder="Winter / Summer" />
+        </div>
+
+        <div class="col-md-7 text-end">
+            <button type="submit" class="btn btn-primary" id="btnEnrollAll" disabled>
+                Enroll pending students
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-2">
+        <!-- LEFT: Available -->
+        <div class="col-md-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-2">Available (not enrolled)</h5>
+                <span class="text-muted small" id="availableCount"></span>
+            </div>
+
+            <div class="row g-2 mb-2">
+                <div class="col-4">
+                    <input id="filterIndex" class="form-control form-control-sm" placeholder="Filter ID" />
+                </div>
+                <div class="col-4">
+                    <input id="filterFirst" class="form-control form-control-sm" placeholder="Filter name" />
+                </div>
+                <div class="col-4">
+                    <input id="filterLast" class="form-control form-control-sm" placeholder="Filter surname" />
+                </div>
+            </div>
+
+            <select id="availableSelect" class="form-select" multiple size="10">
+                @foreach (var s in Model.AvailableStudents)
+                {
+                    <option value="@s.StudentId"
+                            data-index="@s.StudentIndex"
+                            data-first="@s.FirstName"
+                            data-last="@s.LastName">
+                        @s.FullName
+                    </option>
+                }
+            </select>
+
+            <div class="form-text">
+                Tip: Use Ctrl/Shift to select multiple. Filter boxes apply live.
+            </div>
+        </div>
+
+        <!-- MIDDLE BUTTONS -->
+        <div class="col-md-2 d-flex flex-column justify-content-center gap-2">
+            <button type="button" class="btn btn-outline-primary" id="btnToPending">&gt;&gt;</button>
+            <button type="button" class="btn btn-outline-secondary" id="btnToAvailable">&lt;&lt;</button>
+        </div>
+
+        <!-- RIGHT: Pending -->
+        <div class="col-md-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-2">Pending enrollments</h5>
+                <span class="text-muted small" id="pendingCount"></span>
+            </div>
+
+            <select id="pendingSelect" class="form-select" multiple size="10"></select>
+
+            <div id="hiddenPendingInputs"></div>
+
+            <div class="form-text">
+                Students here will be enrolled when you click "Enroll pending students".
+            </div>
+        </div>
+    </div>
 </form>
+
+<hr />
+
+<h4>Currently enrolled</h4>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Index</th>
+            <th>Name</th>
+            <th>Year</th>
+            <th>Semester</th>
+            <th>Status</th>
+            <th>Finish date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model.EnrolledStudents)
+        {
+            <tr>
+                <td>@s.StudentIndex</td>
+                <td>@s.FullName</td>
+                <td>@(s.Year?.ToString() ?? "-")</td>
+                <td>@(s.Semester ?? "-")</td>
+                <td>
+                    @if (s.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Finished</span>
+                    }
+                </td>
+                <td>@(s.FinishDate?.ToString("yyyy-MM-dd") ?? "-")</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary"
+                       asp-controller="Enrollments"
+                       asp-action="Edit"
+                       asp-route-id="@s.EnrollmentId">
+                        Edit
+                    </a>
+
+                    @if (s.IsActive)
+                    {
+                        <button type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#endEnrollmentModal"
+                                data-enrollment-id="@s.EnrollmentId"
+                                data-student-name="@s.FullName">
+                            End
+                        </button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.CourseId">Back</a>
+
+<!-- END ENROLLMENT MODAL -->
+<div class="modal fade" id="endEnrollmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="EndEnrollment" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header">
+                    <h5 class="modal-title">End enrollment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="CourseId" value="@Model.CourseId" />
+                    <input type="hidden" id="EnrollmentIdInput" name="EnrollmentId" />
+                    <p id="EndEnrollmentStudentName"></p>
+
+                    <label class="form-label">Finish date</label>
+                    <input type="date" class="form-control" name="FinishDate" required />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const available = document.getElementById("availableSelect");
+            const pending = document.getElementById("pendingSelect");
+
+            const btnToPending = document.getElementById("btnToPending");
+            const btnToAvailable = document.getElementById("btnToAvailable");
+
+            const filterIndex = document.getElementById("filterIndex");
+            const filterFirst = document.getElementById("filterFirst");
+            const filterLast = document.getElementById("filterLast");
+
+            const hiddenInputs = document.getElementById("hiddenPendingInputs");
+            const btnEnrollAll = document.getElementById("btnEnrollAll");
+
+            const availableCount = document.getElementById("availableCount");
+            const pendingCount = document.getElementById("pendingCount");
+
+            function normalize(s) {
+                return (s || "").toString().toLowerCase().trim();
+            }
+
+            function updateCounts() {
+                availableCount.textContent = `${available.options.length} students`;
+                pendingCount.textContent = `${pending.options.length} students`;
+            }
+
+            function syncHiddenInputs() {
+                hiddenInputs.innerHTML = "";
+                const opts = Array.from(pending.options);
+                opts.forEach((o, i) => {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = `PendingStudentIds[${i}]`;
+                    input.value = o.value;
+                    hiddenInputs.appendChild(input);
+                });
+                btnEnrollAll.disabled = opts.length === 0;
+                updateCounts();
+            }
+
+            function applyFilters() {
+                const idx = normalize(filterIndex.value);
+                const fn = normalize(filterFirst.value);
+                const ln = normalize(filterLast.value);
+
+                Array.from(available.options).forEach(o => {
+                    const oIdx = normalize(o.dataset.index);
+                    const oFn = normalize(o.dataset.first);
+                    const oLn = normalize(o.dataset.last);
+
+                    const ok =
+                        (!idx || oIdx.includes(idx)) &&
+                        (!fn || oFn.includes(fn)) &&
+                        (!ln || oLn.includes(ln));
+
+                    o.hidden = !ok;
+                });
+            }
+
+            function moveSelected(fromSel, toSel) {
+                const selected = Array.from(fromSel.options).filter(o => o.selected && !o.hidden);
+                selected.forEach(o => {
+                    o.selected = false;
+                    toSel.appendChild(o);
+                });
+                applyFilters();      // re-apply because available list changed
+                syncHiddenInputs();
+            }
+
+            btnToPending.addEventListener("click", () => moveSelected(available, pending));
+            btnToAvailable.addEventListener("click", () => moveSelected(pending, available));
+
+            filterIndex.addEventListener("input", applyFilters);
+            filterFirst.addEventListener("input", applyFilters);
+            filterLast.addEventListener("input", applyFilters);
+
+            // Initial
+            applyFilters();
+            syncHiddenInputs();
+
+            // Modal wiring (Bootstrap 5)
+            const modal = document.getElementById("endEnrollmentModal");
+            modal.addEventListener("show.bs.modal", e => {
+                const btn = e.relatedTarget;
+                document.getElementById("EnrollmentIdInput").value =
+                    btn.getAttribute("data-enrollment-id");
+
+                document.getElementById("EndEnrollmentStudentName").innerText =
+                    "Ending enrollment for: " + btn.getAttribute("data-student-name");
+            });
+        });
+    </script>
+}

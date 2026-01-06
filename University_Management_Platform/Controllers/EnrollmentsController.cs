@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using University_Management_Platform.Data;
 using University_Management_Platform.Models.ViewModels;
@@ -15,6 +17,7 @@ namespace University_Management_Platform.Controllers
         }
 
         // GET: Enrollments/Edit/5
+        [Authorize(Roles ="Admin, Teacher, Student")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null) return NotFound();
@@ -38,8 +41,6 @@ namespace University_Management_Platform.Controllers
                 Semester = e.Semester,
                 Year = e.Year,
                 Grade = e.Grade,
-                SeminalUrl = e.SeminalUrl,
-                ProjectUrl = e.ProjectUrl,
                 ExamPoints = e.ExamPoints,
                 SeminalPoints = e.SeminalPoints,
                 ProjectPoints = e.ProjectPoints,
@@ -51,6 +52,7 @@ namespace University_Management_Platform.Controllers
         }
 
         // POST: Enrollments/Edit/5
+        [Authorize(Roles = "Admin, Teacher, Student")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, EnrollmentEditVm vm)
@@ -66,8 +68,6 @@ namespace University_Management_Platform.Controllers
             e.Semester = vm.Semester;
             e.Year = vm.Year;
             e.Grade = vm.Grade;
-            e.SeminalUrl = vm.SeminalUrl;
-            e.ProjectUrl = vm.ProjectUrl;
             e.ExamPoints = vm.ExamPoints;
             e.SeminalPoints = vm.SeminalPoints;
             e.ProjectPoints = vm.ProjectPoints;
@@ -76,7 +76,15 @@ namespace University_Management_Platform.Controllers
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Details", "Courses", new { id = e.CourseId });
+            if (User.IsInRole("Teacher"))
+            {
+                return RedirectToAction("MyCourseStudents", "Courses", new { id = e.CourseId });
+            }
+            else
+            {
+                return RedirectToAction("Details", "Courses", new { id = e.CourseId });
+            }
+                
         }
     }
 }

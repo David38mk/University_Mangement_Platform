@@ -41,5 +41,8 @@ namespace University_Management_Platform.ViewModels.Students
 
         [Display(Name = "Photo")]
         public IFormFile? Photo { get; set; }
+
+        public string? IdentityUserId { get; set; }
+
     }
 }

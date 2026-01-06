@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using University_Management_Platform.Data;
 using University_Management_Platform.Models;
 using University_Management_Platform.ViewModels.EnrollmentSubmissions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace University_Management_Platform.Controllers
 {
@@ -35,6 +36,7 @@ namespace University_Management_Platform.Controllers
         }
 
         // GET: /EnrollmentSubmissions/Create?enrollmentId=5
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> Create(int enrollmentId)
         {
             var enrollmentExists = await _context.Enrollments.AnyAsync(e => e.Id == enrollmentId);
@@ -49,6 +51,7 @@ namespace University_Management_Platform.Controllers
         }
 
         // POST: /EnrollmentSubmissions/Create
+        [Authorize(Roles = "Student")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EnrollmentSubmissionsCreateVM vm)
@@ -135,6 +138,7 @@ namespace University_Management_Platform.Controllers
         }
 
         // POST: /EnrollmentSubmissions/Delete/12
+        [Authorize(Roles = "Student")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)

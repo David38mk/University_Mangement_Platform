@@ -18,10 +18,6 @@ namespace University_Management_Platform.Models
         
         public int? Year { get; set; }
         public int? Grade { get; set; }
-        [StringLength(255)]
-        public string? SeminalUrl { get; set; }
-        [StringLength(255)]
-        public string? ProjectUrl { get; set; }
         public int? ExamPoints { get; set; }
         public int? SeminalPoints { get; set; }
         public int? ProjectPoints { get; set; }
